@@ -12,9 +12,6 @@ document.body.appendChild( renderer.domElement )
 /* add objects to the scene */
 let controls = new THREE.OrbitControls( camera, renderer.domElement )
 
-let geometry = new THREE.BoxGeometry()
-let material = new THREE.MeshNormalMaterial()
-let cube = new THREE.Mesh( geometry, material )
 let light = new THREE.PointLight( 0xddffdd, 1.0 )
 light.position.z = 70
 light.position.y = - 70
@@ -33,92 +30,68 @@ light3.position.x = 70
 light3.position.y = - 70
 scene.add( light3 )
 
+let flowerFactory = new Flower([
+	{
+		name: 'PUSHILIN_sunflower.gltf',
+		path: 'models/sunflower/',
+		scale: 2
+	},
+	{
+		name: 'PipeOrganCactus.gltf',
+		path: 'models/cactus/',
+		scale: 0.5
+	},
+	{
+		name: 'model.gltf',
+		path: 'models/flowers/',
+		scale: 1.5
+	},
+	{
+		name: 'DesertLily.gltf',
+		path: 'models/lily/',
+		scale: 0.5
+	},
+	{
+		name: 'Rose_Bush_01.gltf',
+		path: 'models/rosebush/',
+		scale: 0.3
+	},
+	{
+		name: 'Vines.gltf',
+		path: 'models/vines/',
+		scale: 0.3
+	},
+])
+
 // Load background texture
-let backgroundloader = new THREE.TextureLoader();
-backgroundloader.load('texture/grassland.jpg' , function(texture){
-	scene.background = texture;
+
+let backgroundLoader = new THREE.TextureLoader();
+backgroundLoader.load('texture/grassland.jpg' , function(texture){
+	texture.wrapS = THREE.RepeatWrapping
+	texture.wrapT = THREE.RepeatWrapping
+	texture.repeat.set(2,1)
+	let geometry = new THREE.SphereBufferGeometry( 52, 45, 45 );
+	let material = new THREE.MeshBasicMaterial( {
+		side: THREE.BackSide,
+		map: texture
+	} );
+	let sphere = new THREE.Mesh( geometry, material )
+	scene.add( sphere );
 });
 
-// Load flowers
-let flower = []
-let flower1, flower2, flower3, flower4, flower5, flower6
-let loader = new THREE.GLTFLoader().setPath( 'models/sunflower/' )
-loader.load( 'PUSHILIN_sunflower.gltf', function ( gltf ) {
-	gltf.scene.traverse( function ( child ) {
-		if (child.isMesh) {
-			//child.material = new THREE.MeshNormalMaterial()
-		}
+// raytracing
+let quoteLoader = new THREE.TextureLoader();
+quoteLoader.load('texture/quote1.png' , function(texture){
+	let geometry1 = new THREE.PlaneBufferGeometry( 16, 4, 8 )
+	let material1 = new THREE.MeshBasicMaterial( {
+		side: THREE.DoubleSide,
+		map: texture
 	} )
-	flower1 = gltf.scene
-	flower1.scale.y = 0
-	//scene.add(flower1)
-	flower.push(flower1)
-} )
-
-let loader1 = new THREE.GLTFLoader().setPath( 'models/cactus/' )
-loader1.load( 'PipeOrganCactus.gltf', function ( gltf ) {
-	gltf.scene.traverse( function ( child ) {
-		if (child.isMesh) {
-			//child.material = new THREE.MeshNormalMaterial()
-		}
-	} )
-	flower2 = gltf.scene
-	flower2.scale.y = 0
-	//scene.add(flower2)
-	flower.push(flower2)
-} )
-
-let loader2 = new THREE.GLTFLoader().setPath( 'models/flowers/' )
-loader2.load( 'model.gltf', function ( gltf ) {
-	gltf.scene.traverse( function ( child ) {
-		if (child.isMesh) {
-			//child.material = new THREE.MeshNormalMaterial()
-		}
-	} )
-	flower3 = gltf.scene
-	flower3.scale.y = 0
-	//scene.add(flower3)
-	flower.push(flower3)
-} )
-
-let loader3 = new THREE.GLTFLoader().setPath( 'models/lily/' )
-loader3.load( 'DesertLily.gltf', function ( gltf ) {
-	gltf.scene.traverse( function ( child ) {
-		if (child.isMesh) {
-			//child.material = new THREE.MeshNormalMaterial()
-		}
-	} )
-	flower4 = gltf.scene
-	flower4.scale.y = 0
-	//scene.add(flower4)
-	flower.push(flower4)
-} )
-
-let loader4 = new THREE.GLTFLoader().setPath( 'models/rosebush/' )
-loader4.load( 'Rose_Bush_01.gltf', function ( gltf ) {
-	gltf.scene.traverse( function ( child ) {
-		if (child.isMesh) {
-			//child.material = new THREE.MeshNormalMaterial()
-		}
-	} )
-	flower5 = gltf.scene
-	flower5.scale.y = 0
-	//scene.add(flower5)
-	flower.push(flower5)
-} )
-
-let loader5 = new THREE.GLTFLoader().setPath( 'models/vines/' )
-loader5.load( 'Vines.gltf', function ( gltf ) {
-	gltf.scene.traverse( function ( child ) {
-		if (child.isMesh) {
-			//child.material = new THREE.MeshNormalMaterial()
-		}
-	} )
-	flower6 = gltf.scene
-	flower6.scale.y = 0
-	//scene.add(flower6)
-	flower.push(flower6)
-} )
+	let plane = new THREE.Mesh( geometry1, material1 )
+	plane.position.set(0,4.5,0)
+	scene.add( plane );
+	// scene.background = texture;
+});
 
 /* functions for event listener */
 function onWindowResize() {
@@ -128,21 +101,6 @@ function onWindowResize() {
 	}
 
 let fl = []
-function addflower(){
-	let random = Math.floor(Math.random() * 6)
-	let newflower = flower[random].clone()
-	fl.push(newflower)
-	let x = Math.random() * 26 - 13
-	let y = -2
-	let z = Math.random() * 26 - 13
-	if (random == 0){
-		//newflower.scale.set(Math.random()*16-8, Math.random()*8, Math.random()*16-8)
-	}
-	newflower.position.set(x,y,z)
-	let scale = Math.random()
-	newflower.scale.set(scale, scale, scale)
-	scene.add(newflower)
-}
 
 let quotes = [
 	'Be yourself; everyone else is already taken. - Oscar Wilde',
@@ -170,57 +128,21 @@ let quotes = [
 function newQuote(){
 	let randomNumber = Math.floor(Math.random() * (quotes.length))
 	let quote = quotes[randomNumber]
-	//let x = Math.random() * 2
-	//let y = Math.random() * 2
-	//let z = Math.random() * 2
-	//quote.position.set(x,y,z)
-	//scene.add(quote)
 	alert(quote)
 }
 
 window.addEventListener( 'resize', onWindowResize, false )
-//window.addEventListener( 'click', addflower, false)
-//window.addEventListener( 'click', newQuote, false)
 window.addEventListener( 'click', () => {
-	addflower(), newQuote()}
-	, false)
+	// addflower()
+	let f = flowerFactory.cloneFlower(45, -2, 26)
+	scene.add(f)
+	fl.push(f)
+	newQuote()
+}, false)
 
 /* Animate Function */
 function animate() {
 	requestAnimationFrame( animate )
 	renderer.render( scene, camera )
-  cube.rotation.y += 0.01
-  cube.rotation.x += 0.02
-
-	/* if (flower1){
-		if (flower1.scale.y <= 1){
-			flower1.scale.y += 0.1
-		}
-	}
-	if (flower2){
-		if (flower2.scale.y <= 1){
-			flower2.scale.y += 0.1
-		}
-	}
-	if (flower3){
-		if (flower3.scale.y <= 1){
-			flower3.scale.y += 0.1
-		}
-	}
-	if (flower4){
-		if (flower4.scale.y <= 1){
-			flower4.scale.y += 0.1
-		}
-	}
-	if (flower5){
-		if (flower5.scale.y <= 1){
-			flower5.scale.y += 0.1
-		}
-	}
-	if (flower6){
-		if (flower6.scale.y <= 1){
-			flower6.scale.y += 0.1
-		}
-	}*/
 }
 animate()
