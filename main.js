@@ -4,9 +4,7 @@ let scene = new THREE.Scene()
 let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
 camera.position.z = 15
 let renderer = new THREE.WebGLRenderer()
-
 renderer.setSize( window.innerWidth, window.innerHeight )
-
 document.body.appendChild( renderer.domElement )
 
 /* add objects to the scene */
@@ -63,9 +61,8 @@ let flowerFactory = new Flower([
 	},
 ])
 
-// Load background texture
-
-let backgroundLoader = new THREE.TextureLoader();
+/* Load background texture */
+let backgroundLoader = new THREE.TextureLoader()
 backgroundLoader.load('texture/grassland.jpg' , function(texture){
 	texture.wrapS = THREE.RepeatWrapping
 	texture.wrapT = THREE.RepeatWrapping
@@ -74,24 +71,32 @@ backgroundLoader.load('texture/grassland.jpg' , function(texture){
 	let material = new THREE.MeshBasicMaterial( {
 		side: THREE.BackSide,
 		map: texture
-	} );
-	let sphere = new THREE.Mesh( geometry, material )
-	scene.add( sphere );
-});
-
-// raytracing
-let quoteLoader = new THREE.TextureLoader();
-quoteLoader.load('texture/quote1.png' , function(texture){
-	let geometry1 = new THREE.PlaneBufferGeometry( 16, 4, 8 )
-	let material1 = new THREE.MeshBasicMaterial( {
-		side: THREE.DoubleSide,
-		map: texture
 	} )
-	let plane = new THREE.Mesh( geometry1, material1 )
-	plane.position.set(0,4.5,0)
-	scene.add( plane );
-	// scene.background = texture;
-});
+	let sphere = new THREE.Mesh( geometry, material )
+	scene.add( sphere )
+})
+
+/* ray tracing */
+let raycaster = new THREE.Raycaster()
+let mouse = new THREE.Vector2( 1, 1 )
+
+function onMouseMove( event ) {
+	event.preventDefault()
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1
+}
+
+/* trying to add raycaster to the scene */
+function checkRaycaster() {
+	raycaster.setFromCamera( mouse, camera )
+	let clickedObjects = raycaster.intersectObject( fl[0] )
+	if ( clickedObjects.length > 0 ) {
+		console.log(clickedObjects[0]);
+		clickedObjects[0].object.scale.x += 0.1
+		clickedObjects[0].object.scale.y += 0.1
+		clickedObjects[0].object.scale.z += 0.1
+	}
+}
 
 /* functions for event listener */
 function onWindowResize() {
@@ -125,19 +130,34 @@ let quotes = [
 	'We accept the love we think we deserve. - Stephen Chbosky, The Perks of Being a Wallflower'
 ]
 
-function newQuote(){
+/* display randomly generated quotes */
+function newDiv(){
 	let randomNumber = Math.floor(Math.random() * (quotes.length))
 	let quote = quotes[randomNumber]
-	alert(quote)
+	let d = document.createElement('span')
+	d.textContent = quote
+	d.className = 'popup'
+	d.style.top = Math.random()* (window.innerHeight)/3 + "px"
+	d.style.left = Math.random() * (window.innerWidth)/3 + "px"
+	d.style.fontSize = Math.random() * 12 + 6 + "px"
+
+	document.body.appendChild(d)
+	setTimeout(() => {
+		document.body.removeChild(d)
+	}, 5*1000)
 }
 
+setInterval(newDiv, 10*1000)
+// newDiv()
+
 window.addEventListener( 'resize', onWindowResize, false )
+window.addEventListener( 'mousemove', onMouseMove, false )
 window.addEventListener( 'click', () => {
-	// addflower()
+	/* addflower */
 	let f = flowerFactory.cloneFlower(45, -2, 26)
 	scene.add(f)
 	fl.push(f)
-	newQuote()
+	// newDiv()
 }, false)
 
 /* Animate Function */
