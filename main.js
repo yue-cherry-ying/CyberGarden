@@ -139,7 +139,7 @@ function newDiv(){
 	d.className = 'popup'
 	d.style.top = Math.random()* (window.innerHeight)/3 + "px"
 	d.style.left = Math.random() * (window.innerWidth)/3 + "px"
-	d.style.fontSize = Math.random() * 12 + 6 + "px"
+	d.style.fontSize = Math.random() * 14 + 7 + "px"
 
 	document.body.appendChild(d)
 	setTimeout(() => {
