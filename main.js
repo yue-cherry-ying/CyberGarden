@@ -1,4 +1,4 @@
-
+/* https://threejs.org */
 /* initializing the scene, camera and renderer */
 let scene = new THREE.Scene()
 let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
@@ -63,7 +63,7 @@ let flowerFactory = new Flower([
 
 /* Load background texture */
 let backgroundLoader = new THREE.TextureLoader()
-backgroundLoader.load('texture/grassland.jpg' , function(texture){
+backgroundLoader.load('texture/grassland.jpg' , function( texture ){
 	texture.wrapS = THREE.RepeatWrapping
 	texture.wrapT = THREE.RepeatWrapping
 	texture.repeat.set(2,1)
@@ -91,7 +91,7 @@ function checkRaycaster() {
 	raycaster.setFromCamera( mouse, camera )
 	let clickedObjects = raycaster.intersectObject( fl[0] )
 	if ( clickedObjects.length > 0 ) {
-		console.log(clickedObjects[0]);
+		console.log( clickedObjects[0] );
 		clickedObjects[0].object.scale.x += 0.1
 		clickedObjects[0].object.scale.y += 0.1
 		clickedObjects[0].object.scale.z += 0.1
@@ -132,18 +132,18 @@ let quotes = [
 
 /* display randomly generated quotes */
 function newDiv(){
-	let randomNumber = Math.floor(Math.random() * (quotes.length))
-	let quote = quotes[randomNumber]
-	let d = document.createElement('span')
+	let randomNumber = Math.floor( Math.random() * (quotes.length) )
+	let quote = quotes[ randomNumber ]
+	let d = document.createElement( 'span' )
 	d.textContent = quote
 	d.className = 'popup'
-	d.style.top = Math.random()* (window.innerHeight)/3 + "px"
-	d.style.left = Math.random() * (window.innerWidth)/3 + "px"
+	d.style.top = Math.random()* ( window.innerHeight ) / 3 + "px"
+	d.style.left = Math.random() * ( window.innerWidth ) / 3 + "px"
 	d.style.fontSize = Math.random() * 14 + 7 + "px"
 
-	document.body.appendChild(d)
+	document.body.appendChild( d )
 	setTimeout(() => {
-		document.body.removeChild(d)
+		document.body.removeChild( d )
 	}, 5*1000)
 }
 
@@ -154,10 +154,9 @@ window.addEventListener( 'resize', onWindowResize, false )
 window.addEventListener( 'mousemove', onMouseMove, false )
 window.addEventListener( 'click', () => {
 	/* addflower */
-	let f = flowerFactory.cloneFlower(45, -2, 26)
+	let f = flowerFactory.cloneFlower( 45, -2, 26 )
 	scene.add(f)
 	fl.push(f)
-	// newDiv()
 }, false)
 
 /* Animate Function */

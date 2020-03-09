@@ -1,3 +1,4 @@
+/* https://threejs.org */
 /*
   This js document is used to create flowers.
   The loadFlower function loads a flower model to the scene.
@@ -11,17 +12,17 @@ clone the flower, then place the flower in a random location of the website.
 */
 
 class Flower{
-  constructor(models){
+  constructor( models ){
     this.flowers = []
-    for (let i = 0; i < models.length; i++) {
-      this.loadFlower(models[i].path, models[i].name, models[i].scale)
+    for ( let i = 0; i < models.length; i++ ) {
+      this.loadFlower( models[i].path, models[i].name, models[i].scale )
     }
   }
-  loadFlower(path, model, scale){
+  loadFlower( path, model, scale ){
     let loader = new THREE.GLTFLoader().setPath( path )
     loader.load( model,  ( gltf ) => {
     	gltf.scene.traverse(  ( child ) => {
-    		if (child.isMesh) {
+    		if ( child.isMesh ) {
     			//child.material = new THREE.MeshNormalMaterial()
     		}
     	} )
@@ -31,13 +32,13 @@ class Flower{
     	this.flowers.push(gltf.scene)
     } )
   }
-  cloneFlower(X, Y, Z){
-  	let random = Math.floor(Math.random() * this.flowers.length)
-  	let newflower = this.flowers[random].clone()
-  	let x = Math.random() * X - X/2
+  cloneFlower( X, Y, Z ){
+  	let random = Math.floor( Math.random() * this.flowers.length )
+  	let newflower = this.flowers[ random ].clone()
+  	let x = Math.random() * X - X / 2
   	let y = Y
-  	let z = Math.random() * Z - Z/2
-  	newflower.position.set(x,y,z)
+  	let z = Math.random() * Z - Z / 2
+  	newflower.position.set( x, y, z )
     return newflower
   }
 }
